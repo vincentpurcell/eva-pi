@@ -1,0 +1,26 @@
+{
+    "name": "eva-pi",
+    "version": "1.0.0",
+    "description": "Raspberry Pi device server for the environment monitoring system.",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "author": "Vincent Purcell",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vincentpurcell/eva-pi"
+    },
+    "dependencies": {
+        "aws-sdk": "^2.154.0",
+        "axios": "^0.17.1",
+        "base64-stream": "0.1.2",
+        "campi": "0.0.4",
+        "express": "4.10.2",
+        "fs": "^0.0.1-security",
+        "node-dht-sensor": "0.0.32",
+        "piinfo": "^0.0.2",
+        "yarn": "^1.2.1"
+    }
+}
