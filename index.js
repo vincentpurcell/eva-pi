@@ -1,20 +1,17 @@
 const Campi = require('campi');
+const fs = require('fs');
 const app = require('express')();
 const http = require('http').Server(app);
 const piinfo = require('piinfo');
-const session = require('express-session');
 const sensorLib = require('node-dht-sensor');
 const AWS = require('aws-sdk');
 const axios = require('axios');
+const ip = require('public-ip');
 
 const config = require('./config.json');
 
-app.use(session({
-    secret: config.APPLICATION_SECRET,
-    resave: true,
-    saveUnitialized: false
-}));
-
+// Try to read an auth token if one exists.
+const auth = require('./auth.json');
 
 // Device initialization
 const campi = new Campi();
@@ -54,7 +51,7 @@ const saveImageToDb = (image, time, temp, humidity) => {
           newImageObject.humidity = humidity;
 
     // POST newImageObject to db.
-    axios.post(`${api}/image`, newImageObject, (err, res) => {
+    axios.post(`${api}/device/image`, newImageObject, (err, res) => {
         if (err) { throw (err) }
         console.log('res', res);
     });
@@ -94,9 +91,7 @@ const startCapture = () => {
         const filename = `${timeNowISO}.jpg`;
 
         campi.getImageAsFile(imageConfig, filename, (err) => {
-            if (err) {
-                throw err;
-            }
+            if (err) { throw err; }
 
             // Take temperature and humidity reading to accompany the file
             const tempFarenheit = (sensorReading.temperature * (9/5) + 32).toFixed(1);
@@ -109,8 +104,12 @@ const startCapture = () => {
 };
 
 const doLogin = () => {
+    // See if we have logged in before. If so, send the auth key. If not, register as a new device and save the auth token.
+    const ipAddress = null;
+    ip.v4().then(ip => ipAddress = ip);
+
     // Authenticate against the API to get a token, then use that token for subsequent requests.
-    axios.post({uri: `${api}/login`, form: { username: 'vincent', password: 'password' }}, (error, res) => {
+    axios.post({uri: `${api}/device/login`, { device: thisDeviceSerial, password: config.RPI_PASSWORD, ip: ipAddress }}, (error, res) => {
         // If we successfully authenticate, start interval image captures forever.
         if (response && response.statusCode && response.statusCode === 200) {
             startCapture();

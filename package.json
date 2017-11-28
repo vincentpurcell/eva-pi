@@ -21,6 +21,7 @@
         "fs": "^0.0.1-security",
         "node-dht-sensor": "0.0.32",
         "piinfo": "^0.0.2",
+        "public-ip": "^2.3.5",
         "yarn": "^1.2.1"
     }
 }
