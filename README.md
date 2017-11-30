@@ -5,3 +5,13 @@ This application is meant to be run directly on a raspberry pi, using a camera m
 The accompanying applications, [Eva Server](https://github.com/vincentpurcell/eva-server) and [Eva Frontend](https://github.com/vincentpurcell/eva-frontend) provide the API and web portal, respectively. Each can be independently deployed.
 
 More info to come as I sketch out the rest of the project :)
+
+## Things to add
+
+Configurability:
+- Monitoring intervals
+- Image quality
+- Adding/removing relays
+- Specifying what triggers a relay (environment variable or time based or manual)
+- Adding/removing sensors
+- Mechanism to associate an EVA user account to this device

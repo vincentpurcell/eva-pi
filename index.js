@@ -9,6 +9,7 @@ const axios = require('axios');
 const ip = require('public-ip');
 const gpio = require('rpi-gpio');
 
+// Read the configuration for things like AWS keys
 const config = require('./config.json');
 
 // Try to read an auth token if one exists.
@@ -19,26 +20,31 @@ const campi = new Campi();
 const api = config.API_URL;
 const thisDeviceSerial = piinfo.serial();
 
-// Raspberry Pi GPIO pin
-const fanPin = 3;
+// Raspberry Pi GPIO pin, but the
+// rpi-gpio library uses Wiring Pi pinout.
+const fanPin = 29;
+let fanIsOn = false;
+let lastFanStart = null;
 
 const imageConfig = {
-    width: 1024,
-    height: 768,
+    width: 3280,
+    height: 2464,
     nopreview: true,
     timeout: 1,
     hflip: true,
-    vflip: true
+    vflip: false
 };
 
+// DHT 11 is type "11"
 const sensor = {
     name: "Sensor #1",
-    type: 11, // DHT 11
+    type: 11,
     pin: 17
 };
 
 // S3 initialization
 const bucketName = config.S3_BUCKET;
+let busy = false;
 
 AWS.config = {
     "accessKeyId": config.S3_KEY,
@@ -50,7 +56,7 @@ const s3 = new AWS.S3({ region: AWS.config.region });
 
 const saveImageToDb = (image, time, temp, humidity) => {
     const newImageObject = {};
-          newImageObject.s3Url = ``;
+          newImageObject.s3Key = image;
           newImageObject.timestamp = time;
           newImageObject.temperature = temp;
           newImageObject.humidity = humidity;
@@ -80,32 +86,41 @@ const uploadFileToS3 = (filename, time, temp, humidity) => {
 
         s3.putObject(uploadParams, (err, data) => {
             if (err) { throw (err) }
-            saveImageToDb(imagePath, time, temp, humidity);
+            console.log('Saved to S3, Response: ', data);
+            saveImageToDb(filename, time, temp, humidity);
         });
     });
 };
 
 const turnOnFan = () => {
+    if (fanIsOn) {
+        return;
+    }
+
     gpio.setup(fanPin, gpio.DIR_OUT, () => {
         gpio.write(fanPin, true, (err) => {
             if (err) throw err;
-            console.log('Fan on.');
+            fanIsOn = true;
+            console.log('Turned fan on.');
         });
     });
 };
 
 const turnOffFan = () => {
+    if (!fanIsOn) {
+        return;
+    }
+
     gpio.setup(fanPin, gpio.DIR_OUT, () => {
         gpio.write(fanPin, false, (err) => {
             if (err) throw err;
-            console.log('Fan off.');
+            fanIsOn = false;
+            console.log('Turned fan off.');
         });
     });
 };
 
 const startCapture = () => {
-    let busy = false;
-
     if (!busy) {
         busy = true;
 
@@ -116,7 +131,7 @@ const startCapture = () => {
         const tempFarenheit = (sensorReading.temperature * (9/5) + 32).toFixed(1);
         const humidity = (sensorReading.humidity).toFixed(1);
 
-        if (tempFarenheit > 75 || humidity > 80) {
+        if (tempFarenheit > 85 || humidity > 60) {
             turnOnFan();
         } else {
             turnOffFan();
@@ -128,6 +143,7 @@ const startCapture = () => {
             // Take temperature and humidity reading to accompany the file
 
             // Send the file to S3...
+            busy = false;
             uploadFileToS3(filename, timeNowISO, tempFarenheit, humidity);
         });
     }
@@ -135,7 +151,7 @@ const startCapture = () => {
 
 const doLogin = () => {
     // See if we have logged in before. If so, send the auth key. If not, register as a new device and save the auth token.
-    setInterval(() => {startCapture();}, 1000);
+    setInterval(() => {startCapture();}, 5000);
     // ip.v4().then((ip) => {
     //     // Authenticate against the API to get a token, then use that token for subsequent requests.
     //     axios.post({uri: `${api}/device/login`, { device: thisDeviceSerial, password: config.RPI_PASSWORD, ip: ipAddress }}, (error, res) => {
