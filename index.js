@@ -135,7 +135,7 @@ const startCapture = () => {
 
 const doLogin = () => {
     // See if we have logged in before. If so, send the auth key. If not, register as a new device and save the auth token.
-    startCapture();
+    setInterval(startCapture(), 1000);
     // ip.v4().then((ip) => {
     //     // Authenticate against the API to get a token, then use that token for subsequent requests.
     //     axios.post({uri: `${api}/device/login`, { device: thisDeviceSerial, password: config.RPI_PASSWORD, ip: ipAddress }}, (error, res) => {
