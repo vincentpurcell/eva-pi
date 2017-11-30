@@ -7,7 +7,7 @@ const sensorLib = require('node-dht-sensor');
 const AWS = require('aws-sdk');
 const axios = require('axios');
 const ip = require('public-ip');
-const gpio = require('pi-gpio');
+const gpio = require('rpi-gpio');
 
 const config = require('./config.json');
 
@@ -86,17 +86,19 @@ const uploadFileToS3 = (filename, time, temp, humidity) => {
 };
 
 const turnOnFan = () => {
-    gpio.open(fanPin, 'output', (err) => {
-        gpio.write(fanPin, 1, () => {
-            gpio.close(fanPin);
+    gpio.setup(fanPin, gpio.DIR_OUT, () => {
+        gpio.write(fanPin, true, (err) => {
+            if (err) throw err;
+            console.log('Fan on.');
         });
     });
 };
 
 const turnOffFan = () => {
-    gpio.open(fanPin, 'output', (err) => {
-        gpio.write(fanPin, 0, () => {
-            gpio.close(fanPin);
+    gpio.setup(fanPin, gpio.DIR_OUT, () => {
+        gpio.write(fanPin, false, (err) => {
+            if (err) throw err;
+            console.log('Fan off.');
         });
     });
 };
