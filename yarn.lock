@@ -9,6 +9,14 @@ accepts@~1.1.3:
     mime-types "~2.0.4"
     negotiator "0.4.9"
 
+asap@~2.0.3:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
+
+async@1.x:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
+
 aws-sdk@^2.154.0:
   version "2.154.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.154.0.tgz#bbe9439d31e380a2e3617ffa217432b4fab776d1"
@@ -40,6 +48,14 @@ base64-stream@0.1.2:
   resolved "https://registry.yarnpkg.com/base64-stream/-/base64-stream-0.1.2.tgz#a1a79a6186d3507a7f626090120a57c7b82884d0"
   dependencies:
     readable-stream "1.0.2"
+
+bindings@~1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.2.1.tgz#14ad6113812d2d37d72e67b4cacb4bb726505f11"
+
+bindings@~1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.3.0.tgz#b346f6ecf6a95f5a815c5839fc7cdb22502f1ed7"
 
 buffer@4.9.1:
   version "4.9.1"
@@ -85,7 +101,7 @@ crypto-browserify@1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/crypto-browserify/-/crypto-browserify-1.0.9.tgz#cc5449685dfb85eb11c9828acc7cb87ab5bbfcc0"
 
-debug@^2.6.9:
+debug@2.x, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
   dependencies:
@@ -125,6 +141,20 @@ duplexer3@^0.1.4:
 ee-first@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.0.tgz#6a0d7c6221e490feefd92ec3f441c9ce8cd097f4"
+
+epoll@0.1.x:
+  version "0.1.22"
+  resolved "https://registry.yarnpkg.com/epoll/-/epoll-0.1.22.tgz#1ab9a637cff11a20970c888b1ca2178b64cf5291"
+  dependencies:
+    bindings "~1.2.1"
+    nan "~2.6.2"
+
+epoll@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/epoll/-/epoll-1.0.1.tgz#120be93917a84548bf5e81fdda140b79d57da49c"
+  dependencies:
+    bindings "~1.3.0"
+    nan "~2.7.0"
 
 escape-html@1.0.1:
   version "1.0.1"
@@ -307,6 +337,14 @@ nan@^2.4.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
 
+nan@~2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.6.2.tgz#e4ff34e6c95fdfb5aecc08de6596f43605a7db45"
+
+nan@~2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.7.0.tgz#d95bf721ec877e08db276ed3fc6eb78f9083ad46"
+
 negotiator@0.4.9:
   version "0.4.9"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.4.9.tgz#92e46b6db53c7e421ed64a2bc94f08be7630df3f"
@@ -331,10 +369,6 @@ path-to-regexp@0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.3.tgz#21b9ab82274279de25b156ea08fd12ca51b8aecb"
 
-pi-gpio@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/pi-gpio/-/pi-gpio-0.0.8.tgz#85636bd59c8aa6002671206aa372f57f3f2c3d54"
-
 pify@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-2.3.0.tgz#ed141a6ac043a849ea588498e7dca8b15330e90c"
@@ -346,6 +380,12 @@ piinfo@^0.0.2:
 prepend-http@^1.0.1:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
+
+promise@7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/promise/-/promise-7.1.1.tgz#489654c692616b8aa55b0724fa809bb7db49c5bf"
+  dependencies:
+    asap "~2.0.3"
 
 proxy-addr@~1.0.3:
   version "1.0.10"
@@ -382,6 +422,15 @@ range-parser@~1.0.2:
 readable-stream@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.0.2.tgz#213ce36864fc1f0d4e98e03b9eb92c64042299d4"
+
+rpi-gpio@^0.0.8:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/rpi-gpio/-/rpi-gpio-0.9.1.tgz#108502c031584b06af17edbdc7f23f70ade969da"
+  dependencies:
+    async "1.x"
+    debug "2.x"
+    epoll "0.1.x"
+    promise "7.1.1"
 
 safe-buffer@^5.0.1:
   version "5.1.1"

@@ -17,6 +17,7 @@
         "axios": "^0.17.1",
         "base64-stream": "0.1.2",
         "campi": "0.0.4",
+        "epoll": "^1.0.1",
         "express": "4.10.2",
         "fs": "^0.0.1-security",
         "node-dht-sensor": "0.0.32",
