@@ -20,7 +20,7 @@ const api = config.API_URL;
 const thisDeviceSerial = piinfo.serial();
 
 // Raspberry Pi GPIO pin
-const fanPin = 22;
+const fanPin = 3;
 
 const imageConfig = {
     width: 1024,
