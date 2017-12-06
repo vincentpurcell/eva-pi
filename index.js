@@ -98,7 +98,7 @@ const uploadFileToS3 = (filename, time, temp, humidity) => {
     });
 };
 
-const turnOnFan = () => {
+const turnOnFan = (data) => {
     if (fanIsOn) {
         return;
     }
@@ -108,13 +108,13 @@ const turnOnFan = () => {
             if (err) throw err;
             fanIsOn = true;
             if (auth.token) {
-                axios.post(`${api}/device/event`, { type: 'FAN_OFF' }, { headers: { authorization: auth.token } });
+                axios.post(`${api}/device/event`, { type: 'FAN_OFF', data: JSON.stringiy(data) }, { headers: { authorization: auth.token } });
             }
         });
     });
 };
 
-const turnOffFan = () => {
+const turnOffFan = (data) => {
     if (!fanIsOn) {
         return;
     }
@@ -126,7 +126,7 @@ const turnOffFan = () => {
             if (err) throw err;
             fanIsOn = false;
             if (auth.token) {
-                axios.post(`${api}/device/event`, { type: 'FAN_OFF' }, { headers: { authorization: auth.token } });
+                axios.post(`${api}/device/event`, { type: 'FAN_OFF', data: JSON.stringiy(data) }, { headers: { authorization: auth.token } });
             }
         });
     });
@@ -140,9 +140,9 @@ const readSensor = () => {
     const minutesSinceLastRun = Math.ceil((diff / 1000) / 60);
 
     if (tempFarenheit > 85 || humidity > 60 || (minutesSinceLastRun > 55 && minutesSinceLastRun < 60)) {
-        turnOnFan();
+        turnOnFan({ temperatue: tempFarenheit, humidity: humidity, lastRun: minutesSinceLastRun });
     } else {
-        turnOffFan();
+        turnOffFan({ temperatue: tempFarenheit, humidity: humidity, lastRun: minutesSinceLastRun });
     }
 };
 
