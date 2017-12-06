@@ -65,7 +65,7 @@ const saveImageToDb = (image, time, temp, humidity) => {
     // POST newImageObject to db.
     axios.post(`${api}/device/image`, newImageObject, {headers: { authorization: auth.token }})
     .then((res) => {
-        axios.post(`${api}/device/event`, { type: 'TOOK_PHOTO', data: JSON.stringiy(newImageObject) }, { headers: { authorization: auth.token } });
+        axios.post(`${api}/device/event`, { type: 'TOOK_PHOTO', data: JSON.stringify(newImageObject) }, { headers: { authorization: auth.token } });
         busy = false;
     })
     .catch((err) => {
@@ -109,7 +109,7 @@ const turnOnFan = (data) => {
             if (err) throw err;
             fanIsOn = true;
             if (auth.token) {
-                axios.post(`${api}/device/event`, { type: 'FAN_OFF', data: JSON.stringiy(data) }, { headers: { authorization: auth.token } });
+                axios.post(`${api}/device/event`, { type: 'FAN_ON', data: JSON.stringify(data) }, { headers: { authorization: auth.token } });
             }
         });
     });
@@ -127,7 +127,7 @@ const turnOffFan = (data) => {
             if (err) throw err;
             fanIsOn = false;
             if (auth.token) {
-                axios.post(`${api}/device/event`, { type: 'FAN_OFF', data: JSON.stringiy(data) }, { headers: { authorization: auth.token } });
+                axios.post(`${api}/device/event`, { type: 'FAN_OFF', data: JSON.stringify(data) }, { headers: { authorization: auth.token } });
             }
         });
     });
