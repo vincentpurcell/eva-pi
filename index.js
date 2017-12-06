@@ -65,6 +65,7 @@ const saveImageToDb = (image, time, temp, humidity) => {
     // POST newImageObject to db.
     axios.post(`${api}/device/image`, newImageObject, {headers: { authorization: auth.token }})
     .then((res) => {
+        axios.post(`${api}/device/event`, { type: 'TOOK_PHOTO', data: JSON.stringiy(newImageObject) }, { headers: { authorization: auth.token } });
         busy = false;
     })
     .catch((err) => {
