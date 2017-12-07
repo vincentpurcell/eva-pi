@@ -56,7 +56,7 @@ AWS.config = {
 
 const s3 = new AWS.S3({ region: AWS.config.region });
 
-const saveImageToDb = (image, time, temp, humidity) => {
+const saveImageToDb = (image, temp, humidity) => {
     const newImageObject = {};
           newImageObject.s3Key = image;
           newImageObject.temperature = temp;
@@ -77,7 +77,7 @@ const deleteFile = (filename) => {
     fs.unlink(filename);
 };
 
-const uploadFileToS3 = (filename, time, temp, humidity) => {
+const uploadFileToS3 = (filename, temp, humidity) => {
     fs.readFile(filename, (err, imageData) => {
         if (err) { throw (err) }
 
@@ -94,7 +94,7 @@ const uploadFileToS3 = (filename, time, temp, humidity) => {
                 throw (err);
             }
             deleteFile(filename);
-            saveImageToDb(filename, time, temp, humidity);
+            saveImageToDb(filename, temp, humidity);
         });
     });
 };
@@ -140,10 +140,12 @@ const readSensor = () => {
     const diff = new Date().getTime() - lastFanOff;
     const minutesSinceLastRun = Math.ceil((diff / 1000) / 60);
 
+    axios.post(`${api}/device/event`, { type: 'READING', data: JSON.stringify({ temperature: tempFarenheit, humidity: humidity, lastRun: minutesSinceLastRun }) }, { headers: { authorization: auth.token } });
+
     if (tempFarenheit > 85 || humidity > 60 || (minutesSinceLastRun > 55 && minutesSinceLastRun < 60)) {
-        turnOnFan({ temperatue: tempFarenheit, humidity: humidity, lastRun: minutesSinceLastRun });
+        turnOnFan({ temperature: tempFarenheit, humidity: humidity, lastRun: minutesSinceLastRun });
     } else {
-        turnOffFan({ temperatue: tempFarenheit, humidity: humidity, lastRun: minutesSinceLastRun });
+        turnOffFan({ temperature: tempFarenheit, humidity: humidity, lastRun: minutesSinceLastRun });
     }
 };
 
@@ -152,13 +154,18 @@ const startCapture = () => {
         busy = true;
 
         readSensor();
+        const timeNowISO = new Date().toISOString();
+        const filename = `${timeNowISO}.jpg`;
 
         campi.getImageAsFile(imageConfig, filename, (err) => {
             if (err) { throw err; }
+            const sensorReading = sensorLib.read(sensor.type, sensor.pin);
+            const tempFarenheit = (sensorReading.temperature * (9/5) + 32).toFixed(1);
+            const humidity = (sensorReading.humidity).toFixed(1);
 
             // Take temperature and humidity reading to accompany the file
             // Send the file to S3...
-            uploadFileToS3(filename, timeNowISO, tempFarenheit, humidity);
+            uploadFileToS3(filename, tempFarenheit, humidity);
         });
     }
 };
@@ -173,19 +180,17 @@ const captureTimer = () => {
 const doLogin = () => {
     setInterval(() => {
         readSensor();
-    }, 5000);
+    }, 30000);
 
     // Authenticate against the API to get a token, then use that token for subsequent requests.
     axios.post(`${api}/device/auth`, { serial: thisDeviceSerial, password: config.RPI_PASSWORD })
     .then((res) => {
-        console.log('auth login', res.data.token);
         auth.token = res.data.token;
         captureTimer();
     })
     .catch((error) => {
         axios.post(`${api}/device/login`, { username: thisDeviceSerial, password: config.RPI_PASSWORD })
         .then((res) => {
-            console.log('token login', res.data.token);
             auth.token = res.data.token;
             captureTimer();
         })
